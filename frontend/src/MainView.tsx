@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
+import { Dialogs } from '@wailsio/runtime';
 import { OrderService, Order } from '../bindings/changeme';
 
 const COL_KEYS = ['no', 'ordering', 'ship', 'docs', 'telex', 'remarks'] as const;
@@ -16,11 +17,19 @@ function MainView() {
   const [sortDir, setSortDir] = useState<'asc' | 'desc'>('asc');
   const [showCompleted, setShowCompleted] = useState(false);
   const [colWidths, setColWidths] = useState<Record<ColKey, number>>(DEFAULT_WIDTHS);
+  const [pinnedSet, setPinnedSet] = useState<Set<string>>(new Set());
+  const [contextMenu, setContextMenu] = useState<{ x: number; y: number; orderNumber: string; isPinned: boolean } | null>(null);
   const tableRef = useRef<HTMLTableElement>(null);
   const resizing = useRef<{ col: ColKey; startX: number; startWidths: Record<ColKey, number> } | null>(null);
 
   useEffect(() => {
     loadData();
+  }, []);
+
+  useEffect(() => {
+    const close = () => setContextMenu(null);
+    document.addEventListener('click', close);
+    return () => document.removeEventListener('click', close);
   }, []);
 
   const loadData = async () => {
@@ -73,9 +82,22 @@ function MainView() {
   };
 
   const handleReload = async () => {
-    const list = await OrderService.ReloadOrders();
-    setOrders(list || []);
-    setSelectedOrder(null);
+    try {
+      const path = await Dialogs.OpenFile({
+        CanChooseDirectories: false,
+        CanChooseFiles: true,
+        Title: '选择 orders.yaml 配置文件',
+        Filters: [{ DisplayName: 'YAML 配置文件', Pattern: '*.yaml;*.yml' }],
+      });
+      if (!path || typeof path !== 'string') return;
+      const dirPath = path.replace(/[/\\][^/\\]+$/, '');
+      await OrderService.SetConfigPath(dirPath);
+      const list = await OrderService.LoadOrders();
+      setOrders(list || []);
+      setSelectedOrder(null);
+    } catch (e) {
+      console.error(e);
+    }
   };
 
   const handleDelete = async () => {
@@ -122,9 +144,37 @@ function MainView() {
   const sortedOrders = [...orders]
     .filter((o) => o["completed"] === showCompleted)
     .sort((a, b) => {
+      const aPin = pinnedSet.has(a["order_number"]);
+      const bPin = pinnedSet.has(b["order_number"]);
+      if (aPin && !bPin) return -1;
+      if (!aPin && bPin) return 1;
       const cmp = a["order_number"].localeCompare(b["order_number"]);
       return sortDir === 'asc' ? cmp : -cmp;
     });
+
+  const searchTerms = inputValue
+    .split(/[,，]/)
+    .map((s) => s.trim().toLowerCase())
+    .filter((s) => s !== '');
+
+  const filteredOrders =
+    searchTerms.length === 0
+      ? sortedOrders
+      : sortedOrders.filter((o) => {
+          const text =
+            o["order_number"].toLowerCase() +
+            ' ' +
+            o["ordering_date"] +
+            ' ' +
+            o["shipping_date"] +
+            ' ' +
+            o["documents_date"] +
+            ' ' +
+            o["telex_rel_date"] +
+            ' ' +
+            o["remarks"].toLowerCase();
+          return searchTerms.some((t) => text.includes(t));
+        });
 
   const saveWidths = useCallback((w: Record<ColKey, number>) => {
     OrderService.SaveColumnWidths(JSON.stringify(w));
@@ -281,7 +331,7 @@ function MainView() {
         <input
           className="input order-input"
           type="text"
-          placeholder="输入订单号"
+          placeholder="~~~"
           value={inputValue}
           onChange={(e) => setInputValue(e.target.value)}
           onKeyDown={handleKeyDown}
@@ -305,7 +355,7 @@ function MainView() {
           {showCompleted ? '恢复订单' : '订单结束'}
         </button>
         <button className="btn btn-reload" onClick={handleReload}>
-          Reload
+          加载配置
         </button>
         <button className="btn btn-action" onClick={() => setShowCompleted((v) => !v)}>
           {showCompleted ? '未结束订单' : '已结束订单'}
@@ -333,7 +383,7 @@ function MainView() {
                 <div className="resize-handle" onMouseDown={(e) => handleResizeStart('docs', e)} />
               </th>
               <th className="col-telex" style={{ width: colWidths.telex + '%' }}>
-                电放
+                放单
                 <div className="resize-handle" onMouseDown={(e) => handleResizeStart('telex', e)} />
               </th>
               <th className="col-remarks" style={{ width: colWidths.remarks + '%' }}>
@@ -343,17 +393,26 @@ function MainView() {
             </tr>
           </thead>
           <tbody>
-            {orders.length === 0 ? (
+            {sortedOrders.length === 0 ? (
               <tr>
                 <td colSpan={6} className="empty-msg">
                   暂无订单，请在上方输入订单号并点击"添加"
                 </td>
               </tr>
+            ) : filteredOrders.length === 0 ? (
+              <tr>
+                <td colSpan={6} className="empty-msg">
+                  未找到匹配的订单
+                </td>
+              </tr>
             ) : (
-              sortedOrders.map((order) => (
+              filteredOrders.map((order) => (
                 <tr
                   key={order["order_number"]}
-                  className={order["order_number"] === selectedOrder ? 'row-selected' : ''}
+                  className={
+                    (order["order_number"] === selectedOrder ? 'row-selected' : '') +
+                    (pinnedSet.has(order["order_number"]) ? ' row-pinned' : '')
+                  }
                   onClick={() =>
                     setSelectedOrder(
                       order["order_number"] === selectedOrder
@@ -361,6 +420,15 @@ function MainView() {
                         : order["order_number"]
                     )
                   }
+                  onContextMenu={(e) => {
+                    e.preventDefault();
+                    setContextMenu({
+                      x: e.clientX,
+                      y: e.clientY,
+                      orderNumber: order["order_number"],
+                      isPinned: pinnedSet.has(order["order_number"]),
+                    });
+                  }}
                 >
                   <td className="col-no">
                     <input
@@ -455,6 +523,31 @@ function MainView() {
           </tbody>
         </table>
       </div>
+      {contextMenu && (
+        <div
+          className="context-menu"
+          style={{ left: contextMenu.x, top: contextMenu.y }}
+          onClick={() => setContextMenu(null)}
+        >
+          <div
+            className="context-menu-item"
+            onClick={() => {
+              setPinnedSet((prev) => {
+                const next = new Set(prev);
+                if (contextMenu.isPinned) {
+                  next.delete(contextMenu.orderNumber);
+                } else {
+                  next.add(contextMenu.orderNumber);
+                }
+                return next;
+              });
+              setContextMenu(null);
+            }}
+          >
+            {contextMenu.isPinned ? '取消置顶' : '置顶'}
+          </div>
+        </div>
+      )}
     </div>
   );
 }
