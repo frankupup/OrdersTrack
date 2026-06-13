@@ -1,0 +1,394 @@
+:root {
+    font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto",
+    "Oxygen", "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue",
+    sans-serif;
+    font-size: 14px;
+    line-height: 24px;
+    font-weight: 400;
+    color-scheme: light dark;
+    color: rgba(255, 255, 255, 0.87);
+    background-color: rgba(27, 38, 54, 1);
+    font-synthesis: none;
+    text-rendering: optimizeLegibility;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    -webkit-text-size-adjust: 100%;
+}
+
+@font-face {
+    font-family: "Inter";
+    font-style: normal;
+    font-weight: 400;
+    src: local(""),
+    url("./Inter-Medium.ttf") format("truetype");
+}
+
+body {
+    margin: 0;
+    padding: 0;
+}
+
+* {
+    box-sizing: border-box;
+}
+
+/* ===== Loading ===== */
+.loading {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+    font-size: 18px;
+}
+
+/* ===== First Launch ===== */
+.first-launch {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+    gap: 12px;
+    padding: 24px;
+}
+
+.first-launch h2 {
+    margin: 0;
+    font-size: 24px;
+    font-weight: 600;
+}
+
+.first-launch .subtitle {
+    margin: 4px 0;
+    font-size: 16px;
+    opacity: 0.8;
+}
+
+.first-launch .hint {
+    margin: 0;
+    font-size: 13px;
+    opacity: 0.5;
+}
+
+.first-launch .folder-select {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-top: 8px;
+}
+
+.first-launch .folder-path {
+    font-size: 13px;
+    opacity: 0.7;
+    max-width: 300px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.first-launch .status-msg {
+    margin-top: 8px;
+    font-size: 13px;
+    opacity: 0.7;
+}
+
+/* ===== Buttons ===== */
+.btn {
+    height: 28px;
+    line-height: 28px;
+    border-radius: 3px;
+    border: none;
+    padding: 0 16px;
+    cursor: pointer;
+    font-size: 13px;
+    background-color: rgba(255, 255, 255, 0.15);
+    color: rgba(255, 255, 255, 0.87);
+    white-space: nowrap;
+}
+
+.btn:hover {
+    background-color: rgba(255, 255, 255, 0.25);
+}
+
+.btn:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+}
+
+.btn-primary {
+    background-color: #1a6ef0;
+    color: white;
+}
+
+.btn-primary:hover {
+    background-color: #1a5fd0;
+}
+
+.btn-reload {
+    margin-left: auto;
+}
+
+.btn.btn-action {
+    background-color: #1a6ef0;
+    color: white;
+}
+
+.btn.btn-action:hover {
+    background-color: #1a5fd0;
+}
+
+.btn.btn-action-active {
+    background-color: rgba(26, 110, 240, 0.35);
+    outline: 1px solid rgba(26, 110, 240, 0.6);
+}
+
+.btn.btn-action-active:hover {
+    background-color: rgba(26, 110, 240, 0.5);
+}
+
+
+.btn-delete-active {
+    background-color: rgba(220, 60, 60, 0.25);
+    outline: 1px solid rgba(220, 60, 60, 0.5);
+}
+
+.btn-delete-active:disabled {
+    opacity: 0.25;
+    cursor: not-allowed;
+}
+
+/* ===== Inputs ===== */
+.input {
+    border: none;
+    border-radius: 3px;
+    outline: none;
+    height: 28px;
+    line-height: 28px;
+    padding: 0 8px;
+    color: black;
+    background-color: rgba(240, 240, 240, 1);
+    font-size: 13px;
+}
+
+.input:hover {
+    background-color: rgba(255, 255, 255, 1);
+}
+
+.input:focus {
+    background-color: rgba(255, 255, 255, 1);
+}
+
+/* ===== Main View ===== */
+.main-view {
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+    padding: 12px;
+}
+
+.toolbar {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 12px;
+    flex-shrink: 0;
+}
+
+.order-input {
+    width: 200px;
+}
+
+/* ===== Table ===== */
+.table-wrapper {
+    flex: 1;
+    overflow: auto;
+    border-radius: 4px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.order-table {
+    width: 100%;
+    border-collapse: collapse;
+    table-layout: fixed;
+}
+
+.order-table thead {
+    position: sticky;
+    top: 0;
+    z-index: 1;
+}
+
+.order-table th {
+    background-color: rgba(40, 55, 75, 1);
+    padding: 8px 6px;
+    font-size: 12px;
+    font-weight: 600;
+    text-align: center;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+    border-left: 1px solid rgba(0, 0, 0, 0.5);
+    border-right: 1px solid rgba(0, 0, 0, 0.5);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    opacity: 0.8;
+    position: relative;
+    overflow: visible;
+}
+
+.resize-handle {
+    position: absolute;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    width: 5px;
+    cursor: col-resize;
+    user-select: none;
+    z-index: 2;
+}
+
+.resize-handle:hover {
+    background-color: rgba(26, 110, 240, 0.5);
+}
+
+.sortable {
+    cursor: pointer;
+    user-select: none;
+}
+
+.sortable:hover {
+    background-color: rgba(60, 75, 95, 1);
+    opacity: 1;
+}
+
+.order-table td {
+    padding: 6px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+    text-align: center;
+    vertical-align: middle;
+}
+
+.order-table tbody tr:hover {
+    background-color: rgba(255, 255, 255, 0.03);
+}
+
+.order-table tbody tr.row-selected {
+    background-color: rgba(26, 110, 240, 0.2);
+    outline: 1px solid rgba(26, 110, 240, 0.5);
+}
+
+.order-table tbody tr {
+    cursor: pointer;
+}
+
+/* Column widths now set via inline styles for resize */
+.col-no {
+    text-align: left;
+    padding-left: 8px;
+    font-weight: 600;
+}
+
+.empty-msg {
+    padding: 32px !important;
+    opacity: 0.4;
+    font-size: 14px;
+}
+
+/* Checkbox + date in cells */
+.checkbox-label {
+    display: inline-flex;
+    align-items: center;
+    cursor: pointer;
+}
+
+.checkbox-label input[type="checkbox"] {
+    width: 16px;
+    height: 16px;
+    cursor: pointer;
+    accent-color: #1a6ef0;
+    margin: 0;
+}
+
+.date-input {
+    width: 128px;
+    margin-left: 4px;
+    font-size: 12px;
+}
+
+.remarks-input {
+    width: 100%;
+    font-size: 12px;
+}
+
+.order-no-input {
+    width: 100%;
+    font-size: 12px;
+    font-weight: 600;
+    text-align: left;
+}
+
+/* ===== Scrollbar ===== */
+.table-wrapper::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+}
+
+.table-wrapper::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.table-wrapper::-webkit-scrollbar-thumb {
+    background-color: rgba(255, 255, 255, 0.15);
+    border-radius: 3px;
+}
+
+.table-wrapper::-webkit-scrollbar-thumb:hover {
+    background-color: rgba(255, 255, 255, 0.25);
+}
+
+/* ===== Light mode ===== */
+@media (prefers-color-scheme: light) {
+    :root {
+        color: #213547;
+        background-color: #ffffff;
+    }
+
+    .btn {
+        background-color: #e8e8e8;
+        color: #213547;
+    }
+
+    .btn:hover {
+        background-color: #ddd;
+    }
+
+    .btn-primary {
+        background-color: #1a6ef0;
+        color: white;
+    }
+
+    .btn-primary:hover {
+        background-color: #1558c0;
+    }
+
+    .input {
+        background-color: #f0f0f0;
+        color: #213547;
+    }
+
+    .input:hover,
+    .input:focus {
+        background-color: #e8e8e8;
+    }
+
+    .order-table th {
+        background-color: #f5f5f5;
+        color: #333;
+    }
+
+    .order-table td {
+        border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+    }
+
+    .order-table tbody tr:hover {
+        background-color: rgba(0, 0, 0, 0.03);
+    }
+}
