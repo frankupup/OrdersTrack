@@ -198,6 +198,33 @@ body {
     width: 200px;
 }
 
+.input-wrap {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+}
+
+.input-clear {
+    position: absolute;
+    right: 4px;
+    width: 20px;
+    height: 20px;
+    line-height: 20px;
+    border: none;
+    background: transparent;
+    color: rgba(0, 0, 0, 0.4);
+    font-size: 16px;
+    cursor: pointer;
+    padding: 0;
+    text-align: center;
+    border-radius: 50%;
+}
+
+.input-clear:hover {
+    background-color: rgba(0, 0, 0, 0.15);
+    color: rgba(0, 0, 0, 0.8);
+}
+
 /* ===== Table ===== */
 .table-wrapper {
     flex: 1;
@@ -280,11 +307,19 @@ body {
 }
 
 .order-table tbody tr.row-pinned {
-    background-color: rgba(26, 110, 240, 0.08);
+    background-color: rgba(26, 110, 240, 0.18);
+}
+
+.order-table tbody tr.row-pinned:hover {
+    background-color: rgba(26, 110, 240, 0.18);
 }
 
 .order-table tbody tr.row-pinned.row-selected {
-    background-color: rgba(26, 110, 240, 0.2);
+    background-color: rgba(26, 110, 240, 0.35);
+}
+
+.order-table tbody tr.row-pinned.row-selected:hover {
+    background-color: rgba(26, 110, 240, 0.35);
 }
 
 /* Column widths now set via inline styles for resize */

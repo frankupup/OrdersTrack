@@ -17,7 +17,6 @@ function MainView() {
   const [sortDir, setSortDir] = useState<'asc' | 'desc'>('asc');
   const [showCompleted, setShowCompleted] = useState(false);
   const [colWidths, setColWidths] = useState<Record<ColKey, number>>(DEFAULT_WIDTHS);
-  const [pinnedSet, setPinnedSet] = useState<Set<string>>(new Set());
   const [contextMenu, setContextMenu] = useState<{ x: number; y: number; orderNumber: string; isPinned: boolean } | null>(null);
   const tableRef = useRef<HTMLTableElement>(null);
   const resizing = useRef<{ col: ColKey; startX: number; startWidths: Record<ColKey, number> } | null>(null);
@@ -144,8 +143,8 @@ function MainView() {
   const sortedOrders = [...orders]
     .filter((o) => o["completed"] === showCompleted)
     .sort((a, b) => {
-      const aPin = pinnedSet.has(a["order_number"]);
-      const bPin = pinnedSet.has(b["order_number"]);
+      const aPin = a["pinned"];
+      const bPin = b["pinned"];
       if (aPin && !bPin) return -1;
       if (!aPin && bPin) return 1;
       const cmp = a["order_number"].localeCompare(b["order_number"]);
@@ -242,6 +241,7 @@ function MainView() {
       telex_rel_date: o["telex_rel_date"],
       remarks: o["remarks"],
       completed: o["completed"],
+      pinned: o["pinned"],
     });
   };
 
@@ -328,15 +328,22 @@ function MainView() {
   return (
     <div className="main-view">
       <div className="toolbar">
-        <input
-          className="input order-input"
-          type="text"
-          placeholder="~~~"
-          value={inputValue}
-          onChange={(e) => setInputValue(e.target.value)}
-          onKeyDown={handleKeyDown}
-          autoComplete="off"
-        />
+        <div className="input-wrap">
+          <input
+            className="input order-input"
+            type="text"
+            placeholder="~"
+            value={inputValue}
+            onChange={(e) => setInputValue(e.target.value)}
+            onKeyDown={handleKeyDown}
+            autoComplete="off"
+          />
+          {inputValue && (
+            <button className="input-clear" onClick={() => setInputValue('')} tabIndex={-1}>
+              &times;
+            </button>
+          )}
+        </div>
         <button className="btn" onClick={handleAdd}>
           添加
         </button>
@@ -411,7 +418,7 @@ function MainView() {
                   key={order["order_number"]}
                   className={
                     (order["order_number"] === selectedOrder ? 'row-selected' : '') +
-                    (pinnedSet.has(order["order_number"]) ? ' row-pinned' : '')
+                    (order["pinned"] ? ' row-pinned' : '')
                   }
                   onClick={() =>
                     setSelectedOrder(
@@ -426,7 +433,7 @@ function MainView() {
                       x: e.clientX,
                       y: e.clientY,
                       orderNumber: order["order_number"],
-                      isPinned: pinnedSet.has(order["order_number"]),
+                      isPinned: order["pinned"],
                     });
                   }}
                 >
@@ -532,15 +539,23 @@ function MainView() {
           <div
             className="context-menu-item"
             onClick={() => {
-              setPinnedSet((prev) => {
-                const next = new Set(prev);
-                if (contextMenu.isPinned) {
-                  next.delete(contextMenu.orderNumber);
-                } else {
-                  next.add(contextMenu.orderNumber);
-                }
-                return next;
-              });
+              const pinned = !contextMenu.isPinned;
+              setOrders((prev) =>
+                prev.map((o) => {
+                  if (o["order_number"] !== contextMenu.orderNumber) return o;
+                  const c = clone(o);
+                  c["pinned"] = pinned;
+                  return c;
+                })
+              );
+              const target = orders.find(
+                (o) => o["order_number"] === contextMenu.orderNumber
+              );
+              if (target) {
+                const c = clone(target);
+                c["pinned"] = pinned;
+                OrderService.UpdateOrder(c);
+              }
               setContextMenu(null);
             }}
           >

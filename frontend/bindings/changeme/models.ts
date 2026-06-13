@@ -16,6 +16,7 @@ export class Order {
     "telex_rel_date": string;
     "remarks": string;
     "completed": boolean;
+    "pinned": boolean;
 
     /** Creates a new Order instance. */
     constructor($$source: Partial<Order> = {}) {
@@ -48,6 +49,9 @@ export class Order {
         }
         if (!("completed" in $$source)) {
             this["completed"] = false;
+        }
+        if (!("pinned" in $$source)) {
+            this["pinned"] = false;
         }
 
         Object.assign(this, $$source);

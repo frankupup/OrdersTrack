@@ -11,6 +11,7 @@ type Order struct {
 	TelexRelDate  string `yaml:"telex_rel_date" json:"telex_rel_date"`
 	Remarks       string `yaml:"remarks" json:"remarks"`
 	Completed     bool   `yaml:"completed" json:"completed"`
+	Pinned        bool   `yaml:"pinned" json:"pinned"`
 }
 
 type OrdersFile struct {
