@@ -356,6 +356,14 @@ body {
     font-size: 12px;
 }
 
+input[type="date"]:invalid::-webkit-datetime-edit {
+    color: transparent;
+}
+
+input[type="date"]:valid::-webkit-datetime-edit {
+    color: black;
+}
+
 .remarks-input {
     width: 100%;
     font-size: 12px;

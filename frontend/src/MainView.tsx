@@ -458,6 +458,7 @@ function MainView() {
                       <input
                         type="date"
                         className="input date-input"
+                        lang="en"
                         value={order["ordering_date"]}
                         onChange={(e) =>
                           handleOrderingDateChange(order, e.target.value)
@@ -469,6 +470,8 @@ function MainView() {
                     <input
                       type="date"
                       className="input date-input"
+                      lang="en"
+                      required
                       value={order["shipping_date"]}
                       onChange={(e) =>
                         handleShippingDateChange(order, e.target.value)
@@ -487,6 +490,7 @@ function MainView() {
                       <input
                         type="date"
                         className="input date-input"
+                        lang="en"
                         value={order["documents_date"]}
                         onChange={(e) =>
                           handleDocumentsDateChange(order, e.target.value)
@@ -506,6 +510,7 @@ function MainView() {
                       <input
                         type="date"
                         className="input date-input"
+                        lang="en"
                         value={order["telex_rel_date"]}
                         onChange={(e) =>
                           handleTelexDateChange(order, e.target.value)
