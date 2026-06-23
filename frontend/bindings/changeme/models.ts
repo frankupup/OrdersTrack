@@ -5,6 +5,111 @@
 // @ts-ignore: Unused imports
 import { Create as $Create } from "@wailsio/runtime";
 
+export class DetailRow {
+    "date": string;
+    "exchange_rate": string;
+    "exec_rate": string;
+    "country": string;
+    "customer": string;
+    "product": string;
+    "rebate_rate": string;
+    "factory": string;
+    "factory_price": string;
+    "packaging": string;
+    "container_type": string;
+    "quantity": string;
+    "port_of_loading": string;
+    "port_of_destination": string;
+    "misc_fee_rmb": string;
+    "freight_usd": string;
+    "profit_rate": string;
+    "fob_price": string;
+    "cfr_price": string;
+    "cif_price": string;
+    "profit": string;
+    "copied": boolean;
+
+    /** Creates a new DetailRow instance. */
+    constructor($$source: Partial<DetailRow> = {}) {
+        if (!("date" in $$source)) {
+            this["date"] = "";
+        }
+        if (!("exchange_rate" in $$source)) {
+            this["exchange_rate"] = "";
+        }
+        if (!("exec_rate" in $$source)) {
+            this["exec_rate"] = "";
+        }
+        if (!("country" in $$source)) {
+            this["country"] = "";
+        }
+        if (!("customer" in $$source)) {
+            this["customer"] = "";
+        }
+        if (!("product" in $$source)) {
+            this["product"] = "";
+        }
+        if (!("rebate_rate" in $$source)) {
+            this["rebate_rate"] = "";
+        }
+        if (!("factory" in $$source)) {
+            this["factory"] = "";
+        }
+        if (!("factory_price" in $$source)) {
+            this["factory_price"] = "";
+        }
+        if (!("packaging" in $$source)) {
+            this["packaging"] = "";
+        }
+        if (!("container_type" in $$source)) {
+            this["container_type"] = "";
+        }
+        if (!("quantity" in $$source)) {
+            this["quantity"] = "";
+        }
+        if (!("port_of_loading" in $$source)) {
+            this["port_of_loading"] = "";
+        }
+        if (!("port_of_destination" in $$source)) {
+            this["port_of_destination"] = "";
+        }
+        if (!("misc_fee_rmb" in $$source)) {
+            this["misc_fee_rmb"] = "";
+        }
+        if (!("freight_usd" in $$source)) {
+            this["freight_usd"] = "";
+        }
+        if (!("profit_rate" in $$source)) {
+            this["profit_rate"] = "";
+        }
+        if (!("fob_price" in $$source)) {
+            this["fob_price"] = "";
+        }
+        if (!("cfr_price" in $$source)) {
+            this["cfr_price"] = "";
+        }
+        if (!("cif_price" in $$source)) {
+            this["cif_price"] = "";
+        }
+        if (!("profit" in $$source)) {
+            this["profit"] = "";
+        }
+        if (!("copied" in $$source)) {
+            this["copied"] = false;
+        }
+
+        Object.assign(this, $$source);
+    }
+
+    /**
+     * Creates a new DetailRow instance from a string or object.
+     */
+    static createFrom($$source: any = {}): DetailRow {
+        let $$parsedSource = typeof $$source === 'string' ? JSON.parse($$source) : $$source;
+        return new DetailRow($$parsedSource as Partial<DetailRow>);
+    }
+}
+
 export class Order {
     "order_number": string;
     "ordering": boolean;
@@ -17,6 +122,7 @@ export class Order {
     "remarks": string;
     "completed": boolean;
     "pinned": boolean;
+    "details": DetailRow[];
 
     /** Creates a new Order instance. */
     constructor($$source: Partial<Order> = {}) {
@@ -53,6 +159,9 @@ export class Order {
         if (!("pinned" in $$source)) {
             this["pinned"] = false;
         }
+        if (!("details" in $$source)) {
+            this["details"] = [];
+        }
 
         Object.assign(this, $$source);
     }
@@ -61,7 +170,15 @@ export class Order {
      * Creates a new Order instance from a string or object.
      */
     static createFrom($$source: any = {}): Order {
+        const $$createField11_0 = $$createType1;
         let $$parsedSource = typeof $$source === 'string' ? JSON.parse($$source) : $$source;
+        if ("details" in $$parsedSource) {
+            $$parsedSource["details"] = $$createField11_0($$parsedSource["details"]);
+        }
         return new Order($$parsedSource as Partial<Order>);
     }
 }
+
+// Private type creation functions
+const $$createType0 = DetailRow.createFrom;
+const $$createType1 = $Create.Array($$createType0);

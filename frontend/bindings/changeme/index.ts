@@ -7,5 +7,6 @@ export {
 };
 
 export {
+    DetailRow,
     Order
 } from "./models.js";

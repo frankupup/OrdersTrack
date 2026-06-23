@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
 import { Dialogs } from '@wailsio/runtime';
 import { OrderService, Order } from '../bindings/changeme';
+import DetailPanel from './DetailPanel';
 
 const COL_KEYS = ['no', 'ordering', 'ship', 'docs', 'telex', 'remarks'] as const;
 type ColKey = (typeof COL_KEYS)[number];
@@ -18,6 +19,8 @@ function MainView() {
   const [showCompleted, setShowCompleted] = useState(false);
   const [colWidths, setColWidths] = useState<Record<ColKey, number>>(DEFAULT_WIDTHS);
   const [contextMenu, setContextMenu] = useState<{ x: number; y: number; orderNumber: string; isPinned: boolean } | null>(null);
+  const [expandedSet, setExpandedSet] = useState<Set<string>>(new Set());
+  const expandedInitialized = useRef(false);
   const tableRef = useRef<HTMLTableElement>(null);
   const resizing = useRef<{ col: ColKey; startX: number; startWidths: Record<ColKey, number> } | null>(null);
 
@@ -30,6 +33,12 @@ function MainView() {
     document.addEventListener('click', close);
     return () => document.removeEventListener('click', close);
   }, []);
+
+  useEffect(() => {
+    if (!expandedInitialized.current) return;
+    const arr = Array.from(expandedSet);
+    OrderService.SaveExpandedOrders(arr.join(','));
+  }, [expandedSet]);
 
   const loadData = async () => {
     const date = await OrderService.GetTodayDate();
@@ -45,6 +54,17 @@ function MainView() {
         setColWidths((prev) => ({ ...prev, ...parsed }));
       } catch {}
     }
+    const expanded = await OrderService.GetExpandedOrders();
+    if (expanded) {
+      const arr = expanded.split(',').filter((s: string) => s !== '');
+      setExpandedSet(new Set(arr));
+    }
+    expandedInitialized.current = true;
+  };
+
+  const refreshOrders = async () => {
+    const list = await OrderService.LoadOrders();
+    setOrders(list || []);
   };
 
   const handleAdd = async () => {
@@ -413,7 +433,8 @@ function MainView() {
                 </td>
               </tr>
             ) : (
-              filteredOrders.map((order) => (
+              filteredOrders.flatMap((order) => {
+                const rowEl = (
                 <tr
                   key={order["order_number"]}
                   className={
@@ -530,7 +551,30 @@ function MainView() {
                     />
                   </td>
                 </tr>
-              ))
+                );
+                if (expandedSet.has(order["order_number"])) {
+                  return [
+                    rowEl,
+                    <tr key={order["order_number"] + '_detail'} className="detail-row">
+                      <td colSpan={6}>
+                        <DetailPanel
+                          orderNumber={order["order_number"]}
+                          details={order["details"] || []}
+                          onClose={() => {
+                            setExpandedSet((prev) => {
+                              const next = new Set(prev);
+                              next.delete(order["order_number"]);
+                              return next;
+                            });
+                          }}
+                          onRefresh={refreshOrders}
+                        />
+                      </td>
+                    </tr>,
+                  ];
+                }
+                return rowEl;
+              })
             )}
           </tbody>
         </table>
@@ -565,6 +609,23 @@ function MainView() {
             }}
           >
             {contextMenu.isPinned ? '取消置顶' : '置顶'}
+          </div>
+          <div
+            className="context-menu-item"
+            onClick={() => {
+              setExpandedSet((prev) => {
+                const next = new Set(prev);
+                if (next.has(contextMenu.orderNumber)) {
+                  next.delete(contextMenu.orderNumber);
+                } else {
+                  next.add(contextMenu.orderNumber);
+                }
+                return next;
+              });
+              setContextMenu(null);
+            }}
+          >
+            详情
           </div>
         </div>
       )}

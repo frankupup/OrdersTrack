@@ -376,6 +376,146 @@ input[type="date"]:valid::-webkit-datetime-edit {
     text-align: left;
 }
 
+/* ===== Detail Panel ===== */
+.detail-row td {
+    padding: 0 !important;
+    border-bottom: none !important;
+}
+
+.detail-panel {
+    padding: 10px 12px;
+    background-color: #f5f5f5;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+    color: #333;
+}
+
+.detail-toolbar {
+    display: flex;
+    gap: 6px;
+    margin-bottom: 8px;
+}
+
+.detail-table-wrap {
+    overflow-x: auto;
+}
+
+.detail-table {
+    border-collapse: collapse;
+    font-size: 11px;
+    white-space: nowrap;
+}
+
+.detail-table th {
+    background-color: #e0e0e0;
+    color: #333;
+    padding: 4px 6px;
+    border: 1px solid #ccc;
+    font-weight: 600;
+    position: relative;
+    text-align: center;
+}
+
+.detail-table td {
+    padding: 0;
+    border: 1px solid #ddd;
+}
+
+.detail-cell-input {
+    width: 100%;
+    border: none;
+    padding: 3px 6px;
+    font-size: 11px;
+    background: transparent;
+    color: #333;
+    outline: none;
+    min-width: 40px;
+    text-align: center;
+}
+
+.detail-cell-input:focus {
+    background-color: #fff;
+    box-shadow: inset 0 0 0 1px #1a6ef0;
+}
+
+.detail-table tbody tr {
+    background-color: inherit;
+}
+
+.detail-table tbody tr.detail-row-imported {
+    background-color: #e8e8e8;
+}
+
+.detail-table tbody tr.detail-row-imported:hover {
+    background-color: #dce5f0;
+}
+
+.detail-table tbody tr.detail-row-copied {
+    background-color: #fff;
+}
+
+.detail-table tbody tr.detail-row-copied:hover {
+    background-color: #f0f7ff;
+}
+
+.detail-table tbody tr:hover {
+    background-color: #e8f0fe;
+}
+
+.detail-actions {
+    display: flex;
+    justify-content: center;
+    gap: 8px;
+    margin-top: 10px;
+}
+
+.detail-actions .btn {
+    height: 22px;
+    line-height: 22px;
+    padding: 0 10px;
+    font-size: 11px;
+}
+
+.detail-cell-text {
+    display: block;
+    padding: 3px 6px;
+    font-size: 11px;
+    min-width: 40px;
+    white-space: nowrap;
+    text-align: center;
+}
+
+.btn-icon {
+    width: 24px;
+    height: 24px;
+    line-height: 24px;
+    padding: 0;
+    border: none;
+    border-radius: 3px;
+    cursor: pointer;
+    font-size: 14px;
+    background-color: rgba(0, 0, 0, 0.08);
+    color: #333;
+    text-align: center;
+}
+
+.btn-icon:hover {
+    background-color: rgba(0, 0, 0, 0.15);
+}
+
+.detail-table .resize-handle {
+    position: absolute;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    width: 5px;
+    cursor: col-resize;
+    z-index: 2;
+}
+
+.detail-table .resize-handle:hover {
+    background-color: rgba(26, 110, 240, 0.5);
+}
+
 /* ===== Context Menu ===== */
 .context-menu {
     position: fixed;

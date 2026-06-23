@@ -9,14 +9,26 @@ import { Call as $Call, CancellablePromise as $CancellablePromise, Create as $Cr
 // @ts-ignore: Unused imports
 import * as $models from "./models.js";
 
+export function AddDetail(orderNumber: string, cells: string[]): $CancellablePromise<boolean> {
+    return $Call.ByID(653223581, orderNumber, cells);
+}
+
 export function AddOrder(orderNumber: string): $CancellablePromise<$models.Order | null> {
     return $Call.ByID(754755204, orderNumber).then(($result: any) => {
         return $$createType1($result);
     });
 }
 
+export function DeleteDetail(orderNumber: string, index: number): $CancellablePromise<boolean> {
+    return $Call.ByID(3543953363, orderNumber, index);
+}
+
 export function DeleteOrder(orderNumber: string): $CancellablePromise<boolean> {
     return $Call.ByID(2568802362, orderNumber);
+}
+
+export function DuplicateDetail(orderNumber: string, index: number): $CancellablePromise<boolean> {
+    return $Call.ByID(3132513455, orderNumber, index);
 }
 
 export function GetColumnWidths(): $CancellablePromise<string> {
@@ -25,6 +37,14 @@ export function GetColumnWidths(): $CancellablePromise<string> {
 
 export function GetConfigPath(): $CancellablePromise<string> {
     return $Call.ByID(1914035678);
+}
+
+export function GetDetailColWidths(): $CancellablePromise<string> {
+    return $Call.ByID(763981457);
+}
+
+export function GetExpandedOrders(): $CancellablePromise<string> {
+    return $Call.ByID(2361637103);
 }
 
 export function GetSortDir(): $CancellablePromise<string> {
@@ -59,6 +79,14 @@ export function SaveColumnWidths(widths: string): $CancellablePromise<void> {
     return $Call.ByID(321196975, widths);
 }
 
+export function SaveDetailColWidths(widths: string): $CancellablePromise<void> {
+    return $Call.ByID(632459284, widths);
+}
+
+export function SaveExpandedOrders(orders: string): $CancellablePromise<void> {
+    return $Call.ByID(1856077304, orders);
+}
+
 export function SaveSortDir(dir: string): $CancellablePromise<void> {
     return $Call.ByID(527480771, dir);
 }
@@ -69,6 +97,10 @@ export function SetConfigPath(path: string): $CancellablePromise<boolean> {
 
 export function UnmarkCompleted(orderNumber: string): $CancellablePromise<boolean> {
     return $Call.ByID(402226868, orderNumber);
+}
+
+export function UpdateDetailRow(orderNumber: string, index: number, row: $models.DetailRow): $CancellablePromise<boolean> {
+    return $Call.ByID(1929094691, orderNumber, index, row);
 }
 
 export function UpdateOrder(updated: $models.Order): $CancellablePromise<void> {
