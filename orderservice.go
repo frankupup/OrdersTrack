@@ -4,7 +4,6 @@ import (
 	"encoding/json"
 	"os"
 	"path/filepath"
-	"strconv"
 	"time"
 
 	"gopkg.in/yaml.v3"
@@ -19,8 +18,6 @@ type appConfig struct {
 	SortDir           string `json:"sort_dir"`
 	ColumnWidths      string `json:"column_widths"`
 	DetailColWidths   string `json:"detail_col_widths"`
-	WindowWidth       int    `json:"window_width"`
-	WindowHeight      int    `json:"window_height"`
 }
 
 func (s *OrderService) loadConfig() *appConfig {
@@ -307,21 +304,6 @@ func (s *OrderService) GetDetailColWidths() string {
 func (s *OrderService) SaveDetailColWidths(widths string) {
 	cfg := s.loadConfig()
 	cfg.DetailColWidths = widths
-	s.saveConfig(cfg)
-}
-
-func (s *OrderService) GetWindowSize() string {
-	cfg := s.loadConfig()
-	if cfg.WindowWidth == 0 {
-		return "1280,768"
-	}
-	return strconv.Itoa(cfg.WindowWidth) + "," + strconv.Itoa(cfg.WindowHeight)
-}
-
-func (s *OrderService) SaveWindowSize(width int, height int) {
-	cfg := s.loadConfig()
-	cfg.WindowWidth = width
-	cfg.WindowHeight = height
 	s.saveConfig(cfg)
 }
 
