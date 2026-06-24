@@ -32,6 +32,21 @@ function MainView() {
     return () => document.removeEventListener('click', close);
   }, []);
 
+  useEffect(() => {
+    let timer: ReturnType<typeof setTimeout>;
+    const onResize = () => {
+      clearTimeout(timer);
+      timer = setTimeout(() => {
+        OrderService.SaveWindowSize(window.innerWidth, window.innerHeight);
+      }, 500);
+    };
+    window.addEventListener('resize', onResize);
+    return () => {
+      window.removeEventListener('resize', onResize);
+      clearTimeout(timer);
+    };
+  }, []);
+
   const loadData = async () => {
     const date = await OrderService.GetTodayDate();
     setTodayDate(date);
@@ -46,6 +61,13 @@ function MainView() {
         setColWidths((prev) => ({ ...prev, ...parsed }));
       } catch {}
     }
+    try {
+      const size = await OrderService.GetWindowSize();
+      const [w, h] = size.split(',').map(Number);
+      if (w && h) {
+        window.resizeTo(w, h);
+      }
+    } catch {}
   };
 
   const refreshOrders = async () => {
@@ -249,6 +271,7 @@ function MainView() {
       completed: o["completed"],
       pinned: o["pinned"],
       expanded: o["expanded"],
+      details: o["details"],
     });
   };
 

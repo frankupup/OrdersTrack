@@ -51,6 +51,10 @@ export function GetTodayDate(): $CancellablePromise<string> {
     return $Call.ByID(2583517708);
 }
 
+export function GetWindowSize(): $CancellablePromise<string> {
+    return $Call.ByID(2006378150);
+}
+
 export function LoadOrders(): $CancellablePromise<$models.Order[]> {
     return $Call.ByID(1955172048).then(($result: any) => {
         return $$createType2($result);
@@ -81,6 +85,10 @@ export function SaveDetailColWidths(widths: string): $CancellablePromise<void> {
 
 export function SaveSortDir(dir: string): $CancellablePromise<void> {
     return $Call.ByID(527480771, dir);
+}
+
+export function SaveWindowSize(width: number, height: number): $CancellablePromise<void> {
+    return $Call.ByID(1592366789, width, height);
 }
 
 export function SetConfigPath(path: string): $CancellablePromise<boolean> {
