@@ -12,6 +12,7 @@ type Order struct {
 	Remarks       string `yaml:"remarks" json:"remarks"`
 	Completed     bool         `yaml:"completed" json:"completed"`
 	Pinned        bool         `yaml:"pinned" json:"pinned"`
+	Expanded      bool         `yaml:"expanded" json:"expanded"`
 	Details       []DetailRow  `yaml:"details" json:"details"`
 }
 

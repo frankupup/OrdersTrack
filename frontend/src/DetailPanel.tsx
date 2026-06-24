@@ -166,7 +166,7 @@ export default function DetailPanel({ orderNumber, details, onClose, onRefresh }
       r['cif_price'] = String(cif);
       r['profit'] = String(profit);
       next[focusedRowIdx] = r as DetailRow;
-      OrderService.UpdateDetailRow(orderNumber, focusedRowIdx, r);
+      OrderService.UpdateDetailRow(orderNumber, focusedRowIdx, r).then(() => onRefresh());
       return next;
     });
   };
@@ -200,7 +200,7 @@ export default function DetailPanel({ orderNumber, details, onClose, onRefresh }
       r['cif_price'] = String(cif);
       r['profit'] = String(profit);
       next[focusedRowIdx] = r as DetailRow;
-      OrderService.UpdateDetailRow(orderNumber, focusedRowIdx, r);
+      OrderService.UpdateDetailRow(orderNumber, focusedRowIdx, r).then(() => onRefresh());
       return next;
     });
   };
@@ -233,7 +233,7 @@ export default function DetailPanel({ orderNumber, details, onClose, onRefresh }
       r['cif_price'] = String(cif);
       r['profit'] = String(profit);
       next[focusedRowIdx] = r as DetailRow;
-      OrderService.UpdateDetailRow(orderNumber, focusedRowIdx, r);
+    OrderService.UpdateDetailRow(orderNumber, focusedRowIdx, r).then(() => onRefresh());
       return next;
     });
   };

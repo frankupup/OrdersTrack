@@ -43,10 +43,6 @@ export function GetDetailColWidths(): $CancellablePromise<string> {
     return $Call.ByID(763981457);
 }
 
-export function GetExpandedOrders(): $CancellablePromise<string> {
-    return $Call.ByID(2361637103);
-}
-
 export function GetSortDir(): $CancellablePromise<string> {
     return $Call.ByID(1894532326);
 }
@@ -81,10 +77,6 @@ export function SaveColumnWidths(widths: string): $CancellablePromise<void> {
 
 export function SaveDetailColWidths(widths: string): $CancellablePromise<void> {
     return $Call.ByID(632459284, widths);
-}
-
-export function SaveExpandedOrders(orders: string): $CancellablePromise<void> {
-    return $Call.ByID(1856077304, orders);
 }
 
 export function SaveSortDir(dir: string): $CancellablePromise<void> {

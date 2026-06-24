@@ -122,6 +122,7 @@ export class Order {
     "remarks": string;
     "completed": boolean;
     "pinned": boolean;
+    "expanded": boolean;
     "details": DetailRow[];
 
     /** Creates a new Order instance. */
@@ -159,6 +160,9 @@ export class Order {
         if (!("pinned" in $$source)) {
             this["pinned"] = false;
         }
+        if (!("expanded" in $$source)) {
+            this["expanded"] = false;
+        }
         if (!("details" in $$source)) {
             this["details"] = [];
         }
@@ -170,10 +174,10 @@ export class Order {
      * Creates a new Order instance from a string or object.
      */
     static createFrom($$source: any = {}): Order {
-        const $$createField11_0 = $$createType1;
+        const $$createField12_0 = $$createType1;
         let $$parsedSource = typeof $$source === 'string' ? JSON.parse($$source) : $$source;
         if ("details" in $$parsedSource) {
-            $$parsedSource["details"] = $$createField11_0($$parsedSource["details"]);
+            $$parsedSource["details"] = $$createField12_0($$parsedSource["details"]);
         }
         return new Order($$parsedSource as Partial<Order>);
     }

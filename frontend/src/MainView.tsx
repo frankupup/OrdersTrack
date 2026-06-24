@@ -19,8 +19,6 @@ function MainView() {
   const [showCompleted, setShowCompleted] = useState(false);
   const [colWidths, setColWidths] = useState<Record<ColKey, number>>(DEFAULT_WIDTHS);
   const [contextMenu, setContextMenu] = useState<{ x: number; y: number; orderNumber: string; isPinned: boolean } | null>(null);
-  const [expandedSet, setExpandedSet] = useState<Set<string>>(new Set());
-  const expandedInitialized = useRef(false);
   const tableRef = useRef<HTMLTableElement>(null);
   const resizing = useRef<{ col: ColKey; startX: number; startWidths: Record<ColKey, number> } | null>(null);
 
@@ -33,12 +31,6 @@ function MainView() {
     document.addEventListener('click', close);
     return () => document.removeEventListener('click', close);
   }, []);
-
-  useEffect(() => {
-    if (!expandedInitialized.current) return;
-    const arr = Array.from(expandedSet);
-    OrderService.SaveExpandedOrders(arr.join(','));
-  }, [expandedSet]);
 
   const loadData = async () => {
     const date = await OrderService.GetTodayDate();
@@ -54,12 +46,6 @@ function MainView() {
         setColWidths((prev) => ({ ...prev, ...parsed }));
       } catch {}
     }
-    const expanded = await OrderService.GetExpandedOrders();
-    if (expanded) {
-      const arr = expanded.split(',').filter((s: string) => s !== '');
-      setExpandedSet(new Set(arr));
-    }
-    expandedInitialized.current = true;
   };
 
   const refreshOrders = async () => {
@@ -262,6 +248,7 @@ function MainView() {
       remarks: o["remarks"],
       completed: o["completed"],
       pinned: o["pinned"],
+      expanded: o["expanded"],
     });
   };
 
@@ -552,7 +539,7 @@ function MainView() {
                   </td>
                 </tr>
                 );
-                if (expandedSet.has(order["order_number"])) {
+                if (order["expanded"]) {
                   return [
                     rowEl,
                     <tr key={order["order_number"] + '_detail'} className="detail-row">
@@ -561,11 +548,14 @@ function MainView() {
                           orderNumber={order["order_number"]}
                           details={order["details"] || []}
                           onClose={() => {
-                            setExpandedSet((prev) => {
-                              const next = new Set(prev);
-                              next.delete(order["order_number"]);
-                              return next;
-                            });
+                            const c = clone(order);
+                            c["expanded"] = false;
+                            setOrders((prev) =>
+                              prev.map((o) =>
+                                o["order_number"] === c["order_number"] ? c : o
+                              )
+                            );
+                            OrderService.UpdateOrder(c);
                           }}
                           onRefresh={refreshOrders}
                         />
@@ -613,15 +603,19 @@ function MainView() {
           <div
             className="context-menu-item"
             onClick={() => {
-              setExpandedSet((prev) => {
-                const next = new Set(prev);
-                if (next.has(contextMenu.orderNumber)) {
-                  next.delete(contextMenu.orderNumber);
-                } else {
-                  next.add(contextMenu.orderNumber);
-                }
-                return next;
-              });
+              const target = orders.find(
+                (o) => o["order_number"] === contextMenu.orderNumber
+              );
+              if (target) {
+                const c = clone(target);
+                c["expanded"] = !c["expanded"];
+                setOrders((prev) =>
+                  prev.map((o) =>
+                    o["order_number"] === c["order_number"] ? c : o
+                  )
+                );
+                OrderService.UpdateOrder(c);
+              }
               setContextMenu(null);
             }}
           >

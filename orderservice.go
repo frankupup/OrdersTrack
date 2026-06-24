@@ -17,7 +17,6 @@ type appConfig struct {
 	Path              string `json:"path"`
 	SortDir           string `json:"sort_dir"`
 	ColumnWidths      string `json:"column_widths"`
-	ExpandedOrders    string `json:"expanded_orders"`
 	DetailColWidths   string `json:"detail_col_widths"`
 }
 
@@ -101,17 +100,6 @@ func (s *OrderService) GetColumnWidths() string {
 func (s *OrderService) SaveColumnWidths(widths string) {
 	cfg := s.loadConfig()
 	cfg.ColumnWidths = widths
-	s.saveConfig(cfg)
-}
-
-func (s *OrderService) GetExpandedOrders() string {
-	cfg := s.loadConfig()
-	return cfg.ExpandedOrders
-}
-
-func (s *OrderService) SaveExpandedOrders(orders string) {
-	cfg := s.loadConfig()
-	cfg.ExpandedOrders = orders
 	s.saveConfig(cfg)
 }
 
